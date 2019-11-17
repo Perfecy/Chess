@@ -39,6 +39,23 @@ namespace Chess
             return x >= 0 && x < 8 &&
                 y >= 0 && y < 8;
         }
+
+        public static bool operator == (Cord a, Cord b)
+        {
+            return a.x == b.x && a.y == b.y;
+        }
+        public static bool operator !=(Cord a, Cord b)
+        {
+            return a.x != b.x || a.y != b.y;
+        }
+
+        public string Name { get { return ((char)('a' + x)).ToString() + (y + 1).ToString(); } }
+        public static IEnumerable<Cord> YieldCords()
+        {
+            for (int y = 0; y < 8; y++)
+                for (int x = 0; x < 8; x++)
+                    yield return new Cord(x, y);
+        }
     }
 
     

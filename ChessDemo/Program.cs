@@ -11,11 +11,22 @@ namespace ChessDemo
     {
         static void Main(string[] args)
         {
+            
             Chess.Chess chess = new Chess.Chess();
+
             while(true)
-            {
+            { //266%
                 Console.WriteLine(chess.fen);
                 Console.WriteLine(ChessToAscii(chess));
+                Console.WriteLine(chess.IsCheck() ? "CHECK" : "-");
+                foreach (string moves in chess.GetAllMoves())
+                    Console.Write(moves + "\t");
+                if (chess.mate == 0)
+                {
+                    Console.WriteLine("MATE");
+                }
+                Console.WriteLine();
+                Console.Write("your turn>>> ");
                 string move = Console.ReadLine();
                 if (move == "") break;
                 chess = chess.Move(move);

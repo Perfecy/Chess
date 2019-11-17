@@ -11,12 +11,15 @@ namespace Chess
         public string fen { get; private set; }
         Board board;
         Moves moves;
+        List<FigureMove> allMoves;
+        public int mate;
 
         public Chess(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         {
             this.fen = fen;
             board = new Board(fen);
             moves = new Moves(board);
+            
         }
 
         Chess(Board board)
@@ -29,6 +32,10 @@ namespace Chess
         public Chess Move(string move)//Pe2e4  Pe7e8Q
         {
             FigureMove fm = new FigureMove(move);
+            if (!moves.CanMove(fm))
+                     return this;
+            if (board.IsCheckAfterMove(fm))
+                return this;
             Board nextBoard = board.Move(fm);
 
             Chess nextChess = new Chess(nextBoard);
@@ -44,7 +51,34 @@ namespace Chess
             return f == Figure.none ? '.' : (char)f;
         }
 
+        public void FindAllMoves()
+        {
+            allMoves = new List<FigureMove>();
+            foreach (FigureOnCord fc in board.YieldFigures())
+                foreach (Cord to in Cord.YieldCords())
+                {
+                    FigureMove fm = new FigureMove(fc, to);
+                    if (moves.CanMove(fm))
+                        if(!board.IsCheckAfterMove(fm))
+                            allMoves.Add(fm);
+                }
+           
+        }
+        
+        public List<string> GetAllMoves()
+        {
+            FindAllMoves();
+            List<string> list = new List<string>();
+            foreach (FigureMove fm in allMoves)
+                list.Add(fm.ToString());
+            mate = allMoves.Count;
+            return list;
+        }
+
+        public bool IsCheck()
+        {
+            return board.IsCheck();
+        }
+
     }
-
-
 }
